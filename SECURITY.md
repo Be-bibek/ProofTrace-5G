@@ -5,7 +5,7 @@
 If you discover a security vulnerability in SecureMark5G, please do NOT open a
 public GitHub issue. Instead:
 
-1. Email: security@yourdomain.com (replace with your email)
+1. Email: bibekdas1055@gmail.com
 2. Subject line: `[SECUREMARK5G] Vulnerability Report`
 3. Include: description, reproduction steps, severity assessment, proposed fix (if any)
 4. You will receive a response within 48 hours
