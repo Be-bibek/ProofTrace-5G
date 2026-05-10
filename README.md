@@ -3,7 +3,7 @@
 > Lightweight watermark-assisted cryptographic authentication for 5G IoT devices.
 > Rust core · Python bindings · IEEE-ready research · Open source
 
-[![CI](https://github.com/yourusername/securemark5g/actions/workflows/ci.yml/badge.svg)](https://github.com/yourusername/securemark5g/actions)
+
 [![Crates.io](https://img.shields.io/crates/v/securemark5g.svg)](https://crates.io/crates/securemark5g)
 [![PyPI](https://img.shields.io/pypi/v/securemark5g.svg)](https://pypi.org/project/securemark5g/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -252,7 +252,7 @@ This project makes four novel claims suitable for IEEE publication:
 
 ## License
 
-MIT — see [LICENSE](LICENSE) for details.
+ — see [LICENSE](LICENSE) for details.
 
 ## Contributing
 
