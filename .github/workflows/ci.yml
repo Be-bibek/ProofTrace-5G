@@ -46,7 +46,9 @@ jobs:
       - name: Install Python dependencies
         run: pip install maturin pytest cryptography psutil matplotlib numpy pandas
       - name: Build Rust extension
-        run: maturin develop
+        run: |
+          maturin build --release
+          pip install target/wheels/*.whl --force-reinstall
       - name: Run Python integration tests
         run: pytest tests/ -v
       - name: Smoke test (end-to-end round-trip)
@@ -77,7 +79,9 @@ jobs:
       - name: Install dependencies
         run: pip install maturin cryptography psutil matplotlib numpy pandas
       - name: Build extension
-        run: maturin develop
+        run: |
+          maturin build --release
+          pip install target/wheels/*.whl --force-reinstall
       - name: Dry-run benchmark
         run: |
           python3 -c "
