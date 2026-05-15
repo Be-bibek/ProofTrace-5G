@@ -61,15 +61,17 @@ Traditional IoT auth uses only Layer 3 (encryption) or Layers 2+3.
 
 <br/>
 
-| Metric | SecureMark5G (Rust) | AES+SHA256 (Python) | Improvement |
-|---|---|---|---|
-| Auth latency | ~12 µs | ~87 µs | **7.3× faster** |
-| Full handshake | ~39 µs | ~284 µs | **7.3× faster** |
-| Memory / session | ~24 KB | ~131 KB | **5.5× less** |
-| Tamper detection | 97% | 62% | **+35 pp** |
-| Replay detection | 100% | 98% | +2 pp |
+| Sub-Metric | SecureMark5G (Rust) | AES+SHA256 (Python) | Existing 5G-AKA | Improvement (vs Python) |
+|---|---|---|---|---|
+| **Registration** | **12 µs** | 87 µs | 95 µs | **7.3× faster** |
+| **Token Gen** | **8 µs** | 62 µs | 78 µs | **7.8× faster** |
+| **WM Embed** | **5 µs** | 44 µs | N/A | **8.8× faster** |
+| **Encryption** | **14 µs** | 91 µs | 85 µs | **6.5× faster** |
+| **Full Handshake**| **39 µs** | 284 µs | 258 µs | **7.3× faster** |
+| **Memory / session**| **24 KB** | 131 KB | 132 KB | **5.5× less** |
+| **Tamper detection**| **97%** | 62% | 48% | **+35 pp** |
 
-*Benchmarks run on 1,000 iterations of the full device→server pipeline. Rust's zero-copy pipeline runs in microseconds vs Python's milliseconds — making URLLC 5G latency requirements achievable.*
+*Benchmarks run on 1,000 iterations. SecureMark5G's zero-copy Rust pipeline eliminates Python's interpreter overhead and optimized BLAKE3/ChaCha20 outperform legacy SHA256/AES-CBC implementations.*
 
 ---
 
