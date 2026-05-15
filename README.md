@@ -1,9 +1,9 @@
 <h1 align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:0a0a1a,50:1a1a4e,100:3C3489&height=240&section=header&text=SecureMark5G&fontSize=52&fontColor=ffffff&animation=fadeIn&fontAlignY=38&desc=Lightweight%20Watermark-Assisted%20Cryptographic%20Auth%20for%205G%20IoT&descAlignY=60&descSize=16" alt="SecureMark5G Banner" />
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:6c5ce7,100:00cec9&height=240&section=header&text=SecureMark5G&fontSize=52&fontColor=ffffff&animation=fadeIn&fontAlignY=38&desc=Lightweight%20Watermark-Assisted%20Cryptographic%20Auth%20for%205G%20IoT&descAlignY=60&descSize=16" alt="SecureMark5G Banner" />
 </h1>
 
 <p align="center">
-  <img src="https://readme-typing-svg.herokuapp.com?font=JetBrains+Mono&size=20&duration=3000&pause=1000&color=AFA9EC&center=true&vCenter=true&width=900&lines=LSB+Steganographic+Watermarking+for+5G+IoT;BLAKE3+%2B+ChaCha20-Poly1305+Zero-Copy+Pipeline;7.3%C3%97+Faster+Than+AES%2BSHA-256+Python+Baseline;IEEE-Ready+Research+%C2%B7+Open+Source+%C2%B7+Rust+Core" alt="Typing SVG" />
+  <img src="https://readme-typing-svg.herokuapp.com?font=JetBrains+Mono&size=20&duration=3000&pause=1000&color=00cec9&center=true&vCenter=true&width=900&lines=LSB+Steganographic+Watermarking+for+5G+IoT;BLAKE3+%2B+ChaCha20-Poly1305+Zero-Copy+Pipeline;7.3%C3%97+Faster+Than+AES%2BSHA-256+Python+Baseline;IEEE-Ready+Research+%C2%B7+Open+Source+%C2%B7+Rust+Core" alt="Typing SVG" />
 </p>
 
 <p align="center">
@@ -27,7 +27,7 @@ It fuses **LSB steganographic watermarking**, **BLAKE3 authentication**, and **C
 ## 🔐 Protocol Design
 
 <div align="center">
-  <img src="assets/architecture.svg" alt="SecureMark5G System Architecture" width="780" />
+  <img src="assets/architecture.svg" alt="SecureMark5G System Architecture" width="100%" />
 </div>
 
 <br/>
@@ -48,7 +48,7 @@ Traditional IoT auth uses only Layer 3 (encryption) or Layers 2+3.
 ## ⚙️ End-to-End Execution Flow
 
 <div align="center">
-  <img src="assets/flowchart.svg" alt="SecureMark5G End-to-End Pipeline" width="560" />
+  <img src="assets/flowchart.svg" alt="SecureMark5G End-to-End Pipeline" width="800" />
 </div>
 
 ---
@@ -56,7 +56,7 @@ Traditional IoT auth uses only Layer 3 (encryption) or Layers 2+3.
 ## 📊 Performance at a Glance
 
 <div align="center">
-  <img src="assets/performance_benchmarks.svg" alt="SecureMark5G Performance Benchmarks" width="780" />
+  <img src="assets/performance_benchmarks.svg" alt="SecureMark5G Performance Benchmarks" width="100%" />
 </div>
 
 <br/>
@@ -331,5 +331,5 @@ Open an issue first for large changes.
 <br/>
 
 <div align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:0a0a1a,50:1a1a4e,100:3C3489&height=140&section=footer&text=Securing%205G%20IoT%20with%20Invisible%20Watermarks&fontSize=22&fontColor=AFA9EC&animation=fadeIn&fontAlignY=65" alt="Footer Wave" />
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:6c5ce7,100:00cec9&height=140&section=footer&text=Securing%205G%20IoT%20with%20Invisible%20Watermarks&fontSize=22&fontColor=ffffff&animation=fadeIn&fontAlignY=65" alt="Footer Wave" />
 </div>
