@@ -45,7 +45,7 @@ mod tests {
     #[test]
     fn test_encrypt_decrypt_roundtrip() {
         let key = [0x42u8; 32];
-        let plaintext = b"SecureMark5G test payload — BLAKE3 + ChaCha20";
+        let plaintext = b"SecureMark5G test payload - BLAKE3 + ChaCha20";
         let encrypted = encrypt(&key, plaintext).unwrap();
         let decrypted = decrypt(&key, &encrypted).unwrap();
         assert_eq!(decrypted, plaintext);

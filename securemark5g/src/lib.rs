@@ -32,6 +32,7 @@ pub use replay::validate_timestamp;
 pub use watermark::{embed, extract, verify as verify_watermark};
 
 use pyo3::prelude::*;
+use pyo3::types::PyBytes;
 use pyo3::exceptions::PyValueError;
 
 /// Python-callable: full device-side pipeline.
@@ -44,12 +45,13 @@ use pyo3::exceptions::PyValueError;
 /// - `sensor_data_bytes`: raw sensor payload (packed float32s or arbitrary bytes)
 /// - `encryption_key`: 32-byte key (for ChaCha20 encryption)
 #[pyfunction]
-fn device_send(
+fn device_send<'py>(
+    py: Python<'py>,
     device_id: &str,
     secret_key: &[u8],
     sensor_data_bytes: &[u8],
     encryption_key: &[u8],
-) -> PyResult<(Vec<u8>, String, u64)> {
+) -> PyResult<(Bound<'py, PyBytes>, String, u64)> {
     if secret_key.len() != 32 || encryption_key.len() != 32 {
         return Err(PyValueError::new_err("Keys must be exactly 32 bytes"));
     }
@@ -70,7 +72,7 @@ fn device_send(
     let packet = encrypt(&enc_key, &payload)
         .map_err(|e| PyValueError::new_err(e.to_string()))?;
 
-    Ok((packet, token_hex, ts))
+    Ok((PyBytes::new_bound(py, &packet), token_hex, ts))
 }
 
 /// Python-callable: full server-side verification pipeline.
@@ -135,7 +137,7 @@ fn server_verify(
 
 /// Register the Python module with both callable functions.
 #[pymodule]
-fn securemark5g(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
+fn securemark5g(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(device_send, m)?)?;
     m.add_function(wrap_pyfunction!(server_verify, m)?)?;
     Ok(())

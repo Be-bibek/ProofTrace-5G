@@ -1,6 +1,6 @@
 [package]
 name = "securemark5g"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 authors = ["Bibek Das <bibekdas1055@gmail.com>"]
 description = "Lightweight watermark-assisted cryptographic authentication for 5G IoT devices"

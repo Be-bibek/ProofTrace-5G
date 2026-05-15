@@ -15,11 +15,7 @@ pub fn validate_timestamp(received_ts: u64) -> Result<(), SecureMarkError> {
         .expect("Clock error")
         .as_secs();
 
-    let age = if now >= received_ts {
-        now - received_ts
-    } else {
-        received_ts - now
-    };
+    let age = now.abs_diff(received_ts);
 
     if age <= REPLAY_WINDOW_SECONDS {
         Ok(())

@@ -7,7 +7,7 @@ use crate::errors::SecureMarkError;
 /// Embed a watermark string into the LSBs of a float array.
 /// Each byte of the watermark occupies 8 consecutive f32 LSBs (1 bit each).
 /// Returns Err if sensor data is shorter than 8 * watermark.len() samples.
-pub fn embed(data: &mut Vec<f32>, watermark: &[u8]) -> Result<(), SecureMarkError> {
+pub fn embed(data: &mut [f32], watermark: &[u8]) -> Result<(), SecureMarkError> {
     if data.len() < watermark.len() * 8 {
         return Err(SecureMarkError::EncryptionError(
             "Sensor data too short to carry watermark".into(),
@@ -29,7 +29,7 @@ pub fn embed(data: &mut Vec<f32>, watermark: &[u8]) -> Result<(), SecureMarkErro
 /// Extract watermark bytes from the LSBs of a float array.
 pub fn extract(data: &[f32], wm_len: usize) -> Vec<u8> {
     let mut result = vec![0u8; wm_len];
-    for byte_idx in 0..wm_len {
+    for (byte_idx, item) in result.iter_mut().enumerate().take(wm_len) {
         let mut byte = 0u8;
         for bit_pos in 0..8 {
             let sample_idx = byte_idx * 8 + bit_pos;
@@ -38,7 +38,7 @@ pub fn extract(data: &[f32], wm_len: usize) -> Vec<u8> {
                 byte |= lsb << bit_pos;
             }
         }
-        result[byte_idx] = byte;
+        *item = byte;
     }
     result
 }
@@ -85,12 +85,14 @@ mod tests {
 
     #[test]
     fn test_lsb_change_is_imperceptible() {
-        let original: Vec<f32> = (0..64).map(|x| x as f32 * 0.5 + 20.0).collect();
+        // Use values near 1.0 where float32 LSB is exactly 2^-23 ≈ 1.19e-7
+        let original: Vec<f32> = (0..64).map(|x| 1.0 + (x as f32 * 0.01)).collect();
         let mut watermarked = original.clone();
         embed(&mut watermarked, b"BIBEK_01").unwrap();
         for (o, w) in original.iter().zip(watermarked.iter()) {
-            // Max difference must be less than 2^-23 (LSB of float32 mantissa ≈ 1.19e-7)
-            assert!((o - w).abs() < 1.5e-7, "Watermark changed value too much: {} vs {}", o, w);
+            let diff = (o - w).abs();
+            // At magnitude 1.0, the max diff is exactly 2^-23
+            assert!(diff < 1.3e-7, "Watermark changed value too much: {} vs {} (diff={})", o, w, diff);
         }
     }
 }

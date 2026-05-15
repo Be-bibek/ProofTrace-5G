@@ -4,6 +4,7 @@ build-backend = "maturin"
 
 [project]
 name = "securemark5g"
+version = "0.1.1"
 requires-python = ">=3.8"
 description = "Lightweight watermark-assisted cryptographic authentication for 5G IoT"
 license = {text = "Apache-2.0"}
@@ -26,4 +27,3 @@ dependencies = [
 [tool.maturin]
 features = ["pyo3/extension-module"]
 module-name = "securemark5g"
-python-source = "python"
