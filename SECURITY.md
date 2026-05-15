@@ -169,9 +169,8 @@ These are widely-used, actively maintained, and have received external security 
 
 To audit current dependency versions:
 
-```bash
-cargo audit        # requires: cargo install cargo-audit
-cargo deny check   # requires: cargo install cargo-deny
-```
+---
 
-Pin dependency versions in `Cargo.lock` and check in the lock file for reproducible builds.
+## ⚖️ License
+
+This security policy and the SecureMark5G codebase are licensed under the **Apache 2.0 License**. See the [LICENSE](LICENSE) file for complete details.

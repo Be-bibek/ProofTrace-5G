@@ -190,3 +190,9 @@ a class of memory-safety bugs common in C IoT implementations.
 | Results (Sec. V) | `paper/results/` — CSV + PNG files |
 | Security Analysis (Sec. VI) | Security Properties table above → `python/attack_test.py` |
 | Conclusion | `paper/proposed_method.md` |
+
+---
+
+## ⚖️ License
+
+This architecture and the associated codebase are licensed under the **Apache 2.0 License**.

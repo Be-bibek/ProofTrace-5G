@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square" alt="License" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache%202.0-800000.svg?style=flat-square" alt="License" /></a>
   <a href="https://www.rust-lang.org"><img src="https://img.shields.io/badge/rust-1.83%2B-E43716.svg?style=flat-square&logo=rust" alt="Rust Version" /></a>
   <a href="https://crates.io/crates/securemark5g"><img src="https://img.shields.io/crates/v/securemark5g.svg?style=flat-square" alt="Crates.io" /></a>
   <a href="https://pypi.org/project/securemark5g/"><img src="https://img.shields.io/pypi/v/securemark5g.svg?style=flat-square&logo=python&logoColor=white" alt="PyPI" /></a>
@@ -321,7 +321,7 @@ None of these are forked — they are used as crate dependencies or build tools.
 
 ## ⚖️ License
 
-MIT — see [LICENSE](LICENSE) for details.
+This project is open-sourced under the **Apache 2.0 License**. See the [LICENSE](LICENSE) file for complete details.
 
 ## Contributing
 
