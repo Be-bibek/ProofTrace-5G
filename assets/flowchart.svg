@@ -1,0 +1,128 @@
+<svg width="680" viewBox="0 0 680 960" role="img" xmlns="http://www.w3.org/2000/svg">
+  <title>SecureMark5G End-to-End Execution Flow</title>
+  <desc>Step-by-step pipeline from IoT device boot through 5G channel to server verification and authentication result</desc>
+
+  <!-- Background -->
+  <rect width="680" height="960" fill="#0D0D18" rx="12"/>
+
+  <!-- Left sidebar annotation -->
+  <text x="100" y="200" text-anchor="middle" fill="#4B4870" font-family="JetBrains Mono, monospace" font-size="11">Rust crate runs here</text>
+  <line x1="100" y1="210" x2="100" y2="530" stroke="#2A2840" stroke-width="1" stroke-dasharray="4,4"/>
+  <text x="100" y="250" text-anchor="middle" fill="#3C3970" font-family="JetBrains Mono, monospace" font-size="10">watermark.rs</text>
+  <text x="100" y="268" text-anchor="middle" fill="#3C3970" font-family="JetBrains Mono, monospace" font-size="10">auth.rs</text>
+  <text x="100" y="286" text-anchor="middle" fill="#3C3970" font-family="JetBrains Mono, monospace" font-size="10">crypto.rs</text>
+  <text x="100" y="304" text-anchor="middle" fill="#3C3970" font-family="JetBrains Mono, monospace" font-size="10">replay.rs</text>
+  <text x="100" y="322" text-anchor="middle" fill="#3C3970" font-family="JetBrains Mono, monospace" font-size="10">pyo3_bindings.rs</text>
+  <text x="100" y="380" text-anchor="middle" fill="#3C3970" font-family="JetBrains Mono, monospace" font-size="10">zero-copy pipeline</text>
+  <text x="100" y="396" text-anchor="middle" fill="#3C3970" font-family="JetBrains Mono, monospace" font-size="10">~microsecond</text>
+  <text x="100" y="412" text-anchor="middle" fill="#3C3970" font-family="JetBrains Mono, monospace" font-size="10">latency per packet</text>
+
+  <!-- STEP 1: IoT device boots -->
+  <rect x="190" y="30" width="320" height="56" rx="10" fill="#085041" stroke="#5DCAA5" stroke-width="1.5"/>
+  <text x="350" y="55" text-anchor="middle" fill="#9FE1CB" font-family="JetBrains Mono, monospace" font-size="14" font-weight="600">IoT device boots</text>
+  <text x="350" y="74" text-anchor="middle" fill="#5DCAA5" font-family="JetBrains Mono, monospace" font-size="11">device_id, secret_key, sensor_data generated</text>
+
+  <!-- Arrow -->
+  <line x1="350" y1="86" x2="350" y2="114" stroke="#5DCAA5" stroke-width="1.5"/>
+  <polygon points="343,110 350,126 357,110" fill="#5DCAA5"/>
+
+  <!-- STEP 2: LSB Watermark embed -->
+  <rect x="190" y="126" width="320" height="56" rx="10" fill="#3C3489" stroke="#AFA9EC" stroke-width="1.5"/>
+  <text x="350" y="151" text-anchor="middle" fill="#CECBF6" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600">LSB watermark embed (watermark.rs)</text>
+  <text x="350" y="169" text-anchor="middle" fill="#AFA9EC" font-family="JetBrains Mono, monospace" font-size="11">device fingerprint hidden in sensor float bits</text>
+
+  <!-- Arrow -->
+  <line x1="350" y1="182" x2="350" y2="210" stroke="#AFA9EC" stroke-width="1.5"/>
+  <polygon points="343,206 350,222 357,206" fill="#AFA9EC"/>
+
+  <!-- STEP 3: BLAKE3 token -->
+  <rect x="190" y="222" width="320" height="66" rx="10" fill="#3C3489" stroke="#AFA9EC" stroke-width="1.5"/>
+  <text x="350" y="248" text-anchor="middle" fill="#CECBF6" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600">BLAKE3 token generation (auth.rs)</text>
+  <text x="350" y="265" text-anchor="middle" fill="#AFA9EC" font-family="JetBrains Mono, monospace" font-size="11">token = BLAKE3(data ‖ watermark ‖ nonce ‖ ts)</text>
+  <text x="350" y="281" text-anchor="middle" fill="#AFA9EC" font-family="JetBrains Mono, monospace" font-size="11">timestamp nonce prevents replay attacks</text>
+
+  <!-- Arrow -->
+  <line x1="350" y1="288" x2="350" y2="316" stroke="#AFA9EC" stroke-width="1.5"/>
+  <polygon points="343,312 350,328 357,312" fill="#AFA9EC"/>
+
+  <!-- STEP 4: ChaCha20 encrypt -->
+  <rect x="190" y="328" width="320" height="56" rx="10" fill="#712B13" stroke="#F0997B" stroke-width="1.5"/>
+  <text x="350" y="353" text-anchor="middle" fill="#F5C4B3" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600">ChaCha20-Poly1305 encrypt (crypto.rs)</text>
+  <text x="350" y="371" text-anchor="middle" fill="#F0997B" font-family="JetBrains Mono, monospace" font-size="11">ciphertext = ChaCha20({data+wm+token}, key)</text>
+
+  <!-- Arrow -->
+  <line x1="350" y1="384" x2="350" y2="412" stroke="#6B6980" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <polygon points="343,408 350,424 357,408" fill="#6B6980"/>
+
+  <!-- STEP 5: 5G Channel -->
+  <rect x="140" y="424" width="420" height="56" rx="10" fill="#1E1E2E" stroke="#6B6980" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <text x="350" y="449" text-anchor="middle" fill="#9A98B0" font-family="JetBrains Mono, monospace" font-size="13" font-weight="500">5G transmission channel</text>
+  <text x="350" y="466" text-anchor="middle" fill="#6B6980" font-family="JetBrains Mono, monospace" font-size="11">encrypted packet in flight — replay / tamper possible here</text>
+  <text x="350" y="473" text-anchor="middle" fill="#6B6980" font-family="JetBrains Mono, monospace" font-size="10">simulated by channel_sim.py during testing</text>
+
+  <!-- Arrow -->
+  <line x1="350" y1="487" x2="350" y2="514" stroke="#85B7EB" stroke-width="1.5"/>
+  <polygon points="343,510 350,526 357,510" fill="#85B7EB"/>
+
+  <!-- STEP 6: ChaCha20 decrypt -->
+  <rect x="190" y="526" width="320" height="52" rx="10" fill="#0C447C" stroke="#85B7EB" stroke-width="1.5"/>
+  <text x="350" y="550" text-anchor="middle" fill="#B5D4F4" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600">ChaCha20 decrypt (server)</text>
+  <text x="350" y="567" text-anchor="middle" fill="#85B7EB" font-family="JetBrains Mono, monospace" font-size="11">plaintext recovered; AEAD tag verified</text>
+
+  <!-- Arrow -->
+  <line x1="350" y1="578" x2="350" y2="606" stroke="#85B7EB" stroke-width="1.5"/>
+  <polygon points="343,602 350,618 357,602" fill="#85B7EB"/>
+
+  <!-- STEP 7: Replay window check -->
+  <rect x="190" y="618" width="320" height="52" rx="10" fill="#0C447C" stroke="#85B7EB" stroke-width="1.5"/>
+  <text x="350" y="642" text-anchor="middle" fill="#B5D4F4" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600">Replay window check (replay.rs)</text>
+  <text x="350" y="659" text-anchor="middle" fill="#85B7EB" font-family="JetBrains Mono, monospace" font-size="11">|now – timestamp| &lt; 30s → continue</text>
+  <!-- Reject branch -->
+  <line x1="510" y1="644" x2="560" y2="644" stroke="#D85A30" stroke-width="1.5"/>
+  <polygon points="556,637 572,644 556,651" fill="#D85A30"/>
+  <rect x="572" y="624" width="80" height="40" rx="8" fill="#712B13" stroke="#D85A30" stroke-width="1.5"/>
+  <text x="612" y="641" text-anchor="middle" fill="#FAECE7" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600">Replay</text>
+  <text x="612" y="656" text-anchor="middle" fill="#D85A30" font-family="JetBrains Mono, monospace" font-size="10">rejected</text>
+  <text x="540" y="636" fill="#D85A30" font-family="JetBrains Mono, monospace" font-size="9">expired</text>
+
+  <!-- Arrow -->
+  <line x1="350" y1="670" x2="350" y2="698" stroke="#85B7EB" stroke-width="1.5"/>
+  <polygon points="343,694 350,710 357,694" fill="#85B7EB"/>
+
+  <!-- STEP 8: Watermark extraction -->
+  <rect x="190" y="710" width="320" height="52" rx="10" fill="#3C3489" stroke="#AFA9EC" stroke-width="1.5"/>
+  <text x="350" y="734" text-anchor="middle" fill="#CECBF6" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600">Watermark extraction (watermark.rs)</text>
+  <text x="350" y="751" text-anchor="middle" fill="#AFA9EC" font-family="JetBrains Mono, monospace" font-size="11">extract LSB fingerprint; compare to registry</text>
+  <!-- Tamper branch -->
+  <line x1="510" y1="736" x2="560" y2="736" stroke="#D85A30" stroke-width="1.5"/>
+  <polygon points="556,729 572,736 556,743" fill="#D85A30"/>
+  <rect x="572" y="716" width="80" height="40" rx="8" fill="#712B13" stroke="#D85A30" stroke-width="1.5"/>
+  <text x="612" y="733" text-anchor="middle" fill="#FAECE7" font-family="JetBrains Mono, monospace" font-size="11" font-weight="600">Tamper</text>
+  <text x="612" y="748" text-anchor="middle" fill="#D85A30" font-family="JetBrains Mono, monospace" font-size="10">detected</text>
+  <text x="535" y="728" fill="#D85A30" font-family="JetBrains Mono, monospace" font-size="9">mismatch</text>
+
+  <!-- Arrow -->
+  <line x1="350" y1="762" x2="350" y2="790" stroke="#AFA9EC" stroke-width="1.5"/>
+  <polygon points="343,786 350,802 357,786" fill="#AFA9EC"/>
+
+  <!-- STEP 9: BLAKE3 verify -->
+  <rect x="190" y="802" width="320" height="52" rx="10" fill="#0C447C" stroke="#85B7EB" stroke-width="1.5"/>
+  <text x="350" y="826" text-anchor="middle" fill="#B5D4F4" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600">BLAKE3 token verify (auth.rs)</text>
+  <text x="350" y="843" text-anchor="middle" fill="#85B7EB" font-family="JetBrains Mono, monospace" font-size="11">recompute token; compare to received token</text>
+
+  <!-- Arrow -->
+  <line x1="350" y1="854" x2="350" y2="882" stroke="#5DCAA5" stroke-width="1.5"/>
+  <polygon points="343,878 350,894 357,878" fill="#5DCAA5"/>
+
+  <!-- Final: Authenticated / Rejected -->
+  <rect x="185" y="894" width="148" height="48" rx="10" fill="#274F0A" stroke="#5DCAA5" stroke-width="2"/>
+  <text x="259" y="915" text-anchor="middle" fill="#C0DD97" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700">Authenticated</text>
+  <text x="259" y="932" text-anchor="middle" fill="#5DCAA5" font-family="JetBrains Mono, monospace" font-size="11">session opens</text>
+
+  <line x1="350" y1="918" x2="380" y2="918" stroke="#6B6980" stroke-width="1.5"/>
+  <text x="367" y="912" text-anchor="middle" fill="#6B6980" font-family="JetBrains Mono, monospace" font-size="9">match</text>
+
+  <rect x="378" y="894" width="148" height="48" rx="10" fill="#712B13" stroke="#D85A30" stroke-width="2"/>
+  <text x="452" y="915" text-anchor="middle" fill="#FAECE7" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700">Rejected</text>
+  <text x="452" y="932" text-anchor="middle" fill="#D85A30" font-family="JetBrains Mono, monospace" font-size="11">alert logged</text>
+</svg>

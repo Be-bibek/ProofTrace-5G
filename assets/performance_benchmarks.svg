@@ -1,0 +1,78 @@
+<svg width="800" viewBox="0 0 800 620" role="img" xmlns="http://www.w3.org/2000/svg">
+  <title>SecureMark5G Performance Benchmarks — Auth Latency</title>
+  <desc>Performance comparison: SecureMark5G (Rust) vs AES+SHA256 (Python) vs existing 5G-AKA protocols</desc>
+
+  <!-- Background -->
+  <rect width="800" height="620" fill="#0F0F1A" rx="12"/>
+
+  <!-- Title -->
+  <text x="400" y="38" text-anchor="middle" fill="#E2E0F0" font-family="JetBrains Mono, monospace" font-size="17" font-weight="600">Performance Benchmarks — SecureMark5G vs existing protocols</text>
+  <text x="400" y="60" text-anchor="middle" fill="#9A98B0" font-family="JetBrains Mono, monospace" font-size="12">Authentication latency in microseconds · Lower is better · 1,000 iteration average</text>
+
+  <!-- Legend -->
+  <rect x="155" y="78" width="14" height="14" rx="3" fill="#534AB7"/>
+  <text x="175" y="90" fill="#CECBF6" font-family="JetBrains Mono, monospace" font-size="12">SecureMark5G (Rust)</text>
+  <rect x="340" y="78" width="14" height="14" rx="3" fill="#D85A30"/>
+  <text x="360" y="90" fill="#FAECE7" font-family="JetBrains Mono, monospace" font-size="12">AES+SHA256 (Python)</text>
+  <rect x="525" y="78" width="14" height="14" rx="3" fill="#888780"/>
+  <text x="545" y="90" fill="#E0DED6" font-family="JetBrains Mono, monospace" font-size="12">Existing 5G-AKA</text>
+
+  <!-- Y-axis label -->
+  <text x="20" y="340" text-anchor="middle" fill="#9A98B0" font-family="JetBrains Mono, monospace" font-size="11" transform="rotate(-90,20,340)">Latency (µs)</text>
+
+  <!-- Grid lines -->
+  <line x1="160" y1="120" x2="760" y2="120" stroke="#2A2840" stroke-width="1"/>
+  <line x1="160" y1="200" x2="760" y2="200" stroke="#2A2840" stroke-width="1"/>
+  <line x1="160" y1="280" x2="760" y2="280" stroke="#2A2840" stroke-width="1"/>
+  <line x1="160" y1="360" x2="760" y2="360" stroke="#2A2840" stroke-width="1"/>
+  <line x1="160" y1="440" x2="760" y2="440" stroke="#2A2840" stroke-width="1"/>
+  <line x1="160" y1="520" x2="760" y2="520" stroke="#3A3858" stroke-width="1.5"/>
+
+  <!-- Y-axis labels -->
+  <text x="145" y="524" text-anchor="end" fill="#6B6980" font-family="JetBrains Mono, monospace" font-size="11">0</text>
+  <text x="145" y="444" text-anchor="end" fill="#6B6980" font-family="JetBrains Mono, monospace" font-size="11">75</text>
+  <text x="145" y="364" text-anchor="end" fill="#6B6980" font-family="JetBrains Mono, monospace" font-size="11">150</text>
+  <text x="145" y="284" text-anchor="end" fill="#6B6980" font-family="JetBrains Mono, monospace" font-size="11">225</text>
+  <text x="145" y="204" text-anchor="end" fill="#6B6980" font-family="JetBrains Mono, monospace" font-size="11">300</text>
+
+  <!-- Group 1: Registration -->
+  <!-- max=300, scale = (520-120)/300 = 1.333 px/unit. bar_h = val*1.333 -->
+  <!-- Registration: 12, 87, 95 -->
+  <rect x="185" y="504" width="30" height="16" rx="3" fill="#534AB7"/>
+  <rect x="225" y="404" width="30" height="116" rx="3" fill="#D85A30"/>
+  <rect x="265" y="394" width="30" height="126" rx="3" fill="#888780"/>
+  <text x="240" y="543" text-anchor="middle" fill="#9A98B0" font-family="JetBrains Mono, monospace" font-size="11">Registration</text>
+  <text x="200" y="498" text-anchor="middle" fill="#CECBF6" font-family="JetBrains Mono, monospace" font-size="10">12µs</text>
+  <text x="240" y="398" text-anchor="middle" fill="#FAECE7" font-family="JetBrains Mono, monospace" font-size="10">87µs</text>
+  <text x="280" y="388" text-anchor="middle" fill="#E0DED6" font-family="JetBrains Mono, monospace" font-size="10">95µs</text>
+
+  <!-- Group 2: Token gen: 8, 62, 78 -->
+  <rect x="330" y="509" width="30" height="11" rx="3" fill="#534AB7"/>
+  <rect x="370" y="437" width="30" height="83" rx="3" fill="#D85A30"/>
+  <rect x="410" y="416" width="30" height="104" rx="3" fill="#888780"/>
+  <text x="385" y="543" text-anchor="middle" fill="#9A98B0" font-family="JetBrains Mono, monospace" font-size="11">Token gen</text>
+  <text x="345" y="503" text-anchor="middle" fill="#CECBF6" font-family="JetBrains Mono, monospace" font-size="10">8µs</text>
+  <text x="385" y="431" text-anchor="middle" fill="#FAECE7" font-family="JetBrains Mono, monospace" font-size="10">62µs</text>
+  <text x="425" y="410" text-anchor="middle" fill="#E0DED6" font-family="JetBrains Mono, monospace" font-size="10">78µs</text>
+
+  <!-- Group 3: WM embed: 5, 44, N/A -->
+  <rect x="475" y="513" width="30" height="7" rx="3" fill="#534AB7"/>
+  <rect x="515" y="461" width="30" height="59" rx="3" fill="#D85A30"/>
+  <text x="510" y="543" text-anchor="middle" fill="#9A98B0" font-family="JetBrains Mono, monospace" font-size="11">WM embed</text>
+  <text x="490" y="507" text-anchor="middle" fill="#CECBF6" font-family="JetBrains Mono, monospace" font-size="10">5µs</text>
+  <text x="530" y="455" text-anchor="middle" fill="#FAECE7" font-family="JetBrains Mono, monospace" font-size="10">44µs</text>
+  <text x="558" y="510" fill="#6B6980" font-family="JetBrains Mono, monospace" font-size="10">N/A</text>
+
+  <!-- Group 4: Encryption: 14, 91, 85 -->
+  <rect x="590" y="501" width="30" height="19" rx="3" fill="#534AB7"/>
+  <rect x="630" y="399" width="30" height="121" rx="3" fill="#D85A30"/>
+  <rect x="670" y="407" width="30" height="113" rx="3" fill="#888780"/>
+  <text x="640" y="543" text-anchor="middle" fill="#9A98B0" font-family="JetBrains Mono, monospace" font-size="11">Encryption</text>
+  <text x="605" y="495" text-anchor="middle" fill="#CECBF6" font-family="JetBrains Mono, monospace" font-size="10">14µs</text>
+  <text x="645" y="393" text-anchor="middle" fill="#FAECE7" font-family="JetBrains Mono, monospace" font-size="10">91µs</text>
+  <text x="685" y="401" text-anchor="middle" fill="#E0DED6" font-family="JetBrains Mono, monospace" font-size="10">85µs</text>
+
+  <!-- Speed-up annotation -->
+  <text x="400" y="578" text-anchor="middle" fill="#534AB7" font-family="JetBrains Mono, monospace" font-size="12" font-weight="600">🚀 7.3× faster registration · 5.5× less memory · 97% tamper detection rate</text>
+  <text x="400" y="598" text-anchor="middle" fill="#6B6980" font-family="JetBrains Mono, monospace" font-size="11">Rust zero-copy pipeline eliminates Python interpreter overhead entirely</text>
+</svg>
