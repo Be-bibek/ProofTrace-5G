@@ -1,0 +1,95 @@
+name: CI
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main]
+
+jobs:
+  rust-tests:
+    name: Rust tests + Clippy
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: securemark5g
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+      - name: Cache cargo registry
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            securemark5g/target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('securemark5g/Cargo.lock') }}
+      - name: Run Rust unit tests
+        run: cargo test --all -- --nocapture
+      - name: Run Clippy (deny warnings)
+        run: cargo clippy -- -D warnings
+
+  python-tests:
+    name: Python integration tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: securemark5g
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install Python dependencies
+        run: pip install maturin pytest cryptography psutil matplotlib numpy pandas
+      - name: Build Rust extension
+        run: maturin develop
+      - name: Run Python integration tests
+        run: pytest tests/ -v
+      - name: Smoke test (end-to-end round-trip)
+        run: |
+          python3 -c "
+          import securemark5g, os
+          key = os.urandom(32)
+          sk  = os.urandom(32)
+          data = b'\x00' * 256
+          packet, token, ts = securemark5g.device_send('DEV001', sk, data, key)
+          ok, reason = securemark5g.server_verify(packet, key, 'DEV001', sk, 256)
+          assert ok and reason == 'authenticated', f'Smoke test FAILED: {ok}, {reason}'
+          print('Smoke test PASSED:', reason)
+          "
+
+  benchmark-dry-run:
+    name: Benchmark dry run (10 iterations)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: securemark5g
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: pip install maturin cryptography psutil matplotlib numpy pandas
+      - name: Build extension
+        run: maturin develop
+      - name: Dry-run benchmark
+        run: |
+          python3 -c "
+          import sys; sys.path.insert(0, 'python')
+          import os, securemark5g
+          from python.device_sim import generate_sensor_data
+          payload = generate_sensor_data(64, seed=42)
+          k = b'testkey_32bytes_exactly_padded!!'
+          sk = b'secretkey_32bytes_exactly_pad!!!'
+          for _ in range(10):
+              p, t, ts = securemark5g.device_send('DEV', sk, payload, k)
+              ok, r = securemark5g.server_verify(p, k, 'DEV', sk, len(payload))
+              assert ok
+          print('Benchmark dry-run: 10 iterations OK')
+          "

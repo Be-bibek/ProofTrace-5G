@@ -1,0 +1,29 @@
+[build-system]
+requires = ["maturin>=1.5,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "securemark5g"
+requires-python = ">=3.8"
+description = "Lightweight watermark-assisted cryptographic authentication for 5G IoT"
+license = {text = "Apache-2.0"}
+authors = [{name = "Bibek Das", email = "bibekdas1055@gmail.com"}]
+keywords = ["5g", "iot", "cryptography", "watermarking", "authentication", "rust"]
+classifiers = [
+    "Programming Language :: Rust",
+    "Programming Language :: Python :: 3",
+    "Topic :: Security :: Cryptography",
+    "Intended Audience :: Science/Research",
+]
+dependencies = [
+    "cryptography>=41.0",
+    "psutil>=5.9",
+    "matplotlib>=3.7",
+    "numpy>=1.24",
+    "pandas>=2.0",
+]
+
+[tool.maturin]
+features = ["pyo3/extension-module"]
+module-name = "securemark5g"
+python-source = "python"

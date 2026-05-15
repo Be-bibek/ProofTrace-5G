@@ -1,0 +1,12 @@
+# This directory is populated by running:
+#   cd securemark5g/python && python3 benchmark.py
+#   cd securemark5g/python && python3 attack_test.py
+#   cd securemark5g/python && python3 graphs.py
+#
+# Generated files (not committed to git):
+#   benchmark_raw.csv
+#   benchmark_stats.csv
+#   attack_results.csv
+#   fig_latency.png
+#   fig_attack_detection.png
+#   fig_memory.png
