@@ -12,6 +12,8 @@
 
 ## What is SecureMark5G?
 
+![System Architecture Overview](assets/architecture.png)
+
 SecureMark5G is a **novel security protocol** that fuses three layers of protection
 into a single zero-copy Rust pipeline for 5G IoT devices:
 
@@ -25,9 +27,15 @@ Traditional IoT auth protocols use only Layer 3 (encryption) or Layers 2 + 3.
 SecureMark5G adds **steganographic watermarking** so that even if an attacker breaks
 the outer encryption layer, data tampering is still detectable from the embedded fingerprint.
 
+### End-to-End Execution Flow
+
+![End-to-End Flowchart](assets/flowchart.png)
+
 ---
 
 ## Performance at a Glance
+
+![Performance Benchmarks](assets/performance_benchmarks.png)
 
 | Metric | SecureMark5G (Rust) | AES+SHA256 (Python) | Improvement |
 |---|---|---|---|
@@ -185,6 +193,8 @@ None of these are forked — they are used as crate dependencies or build tools.
 ---
 
 ## Project Structure
+
+![Project Structure Visualized](assets/project_structure.png)
 
 ```
 securemark5g/
