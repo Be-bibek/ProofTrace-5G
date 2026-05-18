@@ -335,5 +335,5 @@ Open an issue first for large changes.
 <br/>
 
 <div align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:6c5ce7,100:00cec9&height=140&section=footer&text=Securing%205G%20IoT%20with%20Invisible%20Watermarks&fontSize=22&fontColor=ffffff&animation=fadeIn&fontAlignY=65" alt="Footer Wave" />
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:6c5ce7,100:00cec9&height=140&section=footer&text=Securing%205G%20IoT%20with%20Invisible%20Watermarks&fontSize=22&fontColor=ffffff&animation=twinkling&fontAlignY=65" alt="Footer Wave" />
 </div>
