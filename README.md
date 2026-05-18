@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:6c5ce7,50:3d5af1,100:00cec9&height=250&section=header&text=SecureMark5G&fontSize=54&fontColor=ffffff&animation=fadeIn&fontAlignY=38&desc=Lightweight%20Watermark-Assisted%20Cryptographic%20Auth%20for%205G%20IoT&descAlignY=60&descSize=16" alt="SecureMark5G Banner" width="100%" />
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:6c5ce7,50:3d5af1,100:00cec9&height=250&section=header&text=SecureMark5G&fontSize=54&fontColor=ffffff&animation=twinkling&fontAlignY=38&desc=Lightweight%20Watermark-Assisted%20Cryptographic%20Auth%20for%205G%20IoT&descAlignY=60&descSize=16" alt="SecureMark5G Banner" width="100%" />
 </p>
 
 <p align="center">
