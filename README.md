@@ -1,6 +1,10 @@
 <h1 align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:6c5ce7,100:00cec9&height=240&section=header&text=SecureMark5G&fontSize=52&fontColor=ffffff&animation=fadeIn&fontAlignY=38&desc=Lightweight%20Watermark-Assisted%20Cryptographic%20Auth%20for%205G%20IoT&descAlignY=60&descSize=16" alt="SecureMark5G Banner" />
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:2b0000,50:520000,100:800000&height=240&section=header&text=Bibek%20Das&fontSize=52&fontColor=ffffff&animation=twinkling&fontAlignY=38&desc=AI%20Engineer%20%E2%80%A2%20Cybersecurity%20Researcher%20%E2%80%A2%20System%20Builder&descAlignY=60&descSize=18" alt="Bibek Das Banner" />
 </h1>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Be-bibek/ProofTrace-5G/main/assets/breathing.svg" alt="Cybernetic Core Breathing Animation" />
+</p>
 
 <p align="center">
   <img src="https://readme-typing-svg.herokuapp.com?font=JetBrains+Mono&size=20&duration=3000&pause=1000&color=00cec9&center=true&vCenter=true&width=900&lines=LSB+Steganographic+Watermarking+for+5G+IoT;BLAKE3+%2B+ChaCha20-Poly1305+Zero-Copy+Pipeline;7.3%C3%97+Faster+Than+AES%2BSHA-256+Python+Baseline;IEEE-Ready+Research+%C2%B7+Open+Source+%C2%B7+Rust+Core" alt="Typing SVG" />
