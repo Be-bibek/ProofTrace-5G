@@ -3,10 +3,6 @@
 </p>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Be-bibek/ProofTrace-5G/main/assets/breathing.svg" alt="Cybernetic Core Breathing Animation" />
-</p>
-
-<p align="center">
   <img src="https://readme-typing-svg.herokuapp.com?font=JetBrains+Mono&size=20&duration=3000&pause=1000&color=00cec9&center=true&vCenter=true&width=900&lines=LSB+Steganographic+Watermarking+for+5G+IoT;BLAKE3+%2B+ChaCha20-Poly1305+Zero-Copy+Pipeline;7.3%C3%97+Faster+Than+AES%2BSHA-256+Python+Baseline;IEEE-Ready+Research+%C2%B7+Open+Source+%C2%B7+Rust+Core" alt="Typing SVG" />
 </p>
 
@@ -25,6 +21,10 @@
 It fuses **LSB steganographic watermarking**, **BLAKE3 authentication**, and **ChaCha20-Poly1305 encryption** into a single zero-copy pipeline — callable from Python via PyO3 bindings — making it the first open-source library to integrate watermark-based data provenance directly into the 5G IoT authentication handshake.
 
 > Built for IEEE publication, crates.io distribution, and real industrial IoT integration.
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Be-bibek/ProofTrace-5G/main/assets/breathing.svg" alt="Cybernetic Core Breathing Animation" />
+</p>
 
 ---
 
