@@ -284,56 +284,6 @@ This project makes **four novel claims** suitable for IEEE publication:
 
 ---
 
-## 📚 GitHub Repositories Used
-
-| Repo | Role | Usage |
-|---|---|---|
-| [BLAKE3-team/BLAKE3](https://github.com/BLAKE3-team/BLAKE3) | Hash function | `blake3 = "1.5"` in Cargo.toml — powers `auth.rs` |
-| [RustCrypto/AEADs](https://github.com/RustCrypto/AEADs) | Encryption | `chacha20poly1305 = "0.10"` — powers `crypto.rs` |
-| [PyO3/pyo3](https://github.com/PyO3/pyo3) | Rust↔Python bridge | `pyo3 = "0.21"` — exposes Rust API to Python |
-| [PyO3/maturin](https://github.com/PyO3/maturin) | Build tool | `maturin develop` / `maturin publish` |
-| [oconnor663/bao](https://github.com/oconnor663/bao) | Reference | Study `tests/bao.py` for BLAKE3 verified streaming patterns |
-
-None of these are forked — they are used as crate dependencies or build tools.
-
----
-
-## 📄 IEEE Paper Citation
-
-```bibtex
-@inproceedings{securemark5g2025,
-  title     = {SecureMark5G: A Rust-Powered Lightweight Watermark-Assisted Authentication
-               Protocol for Secure 5G IoT Networks},
-  author    = {Bibek Das},
-  booktitle = {IEEE Conference on Communications and Network Security},
-  year      = {2025},
-  note      = {Under review}
-}
-```
-
----
-
-## 🎓 Author
-
-**Bibek Das**
-- B.Tech Scholar, Electronics and Communication Engineering (ECE)
-- Guru Nanak Institute of Technology
-- GitHub: [@Be-bibek](https://github.com/Be-bibek)
-- Email: [bibekdas1055@gmail.com](mailto:bibekdas1055@gmail.com)
-
----
-
-## ⚖️ License
-
-This project is open-sourced under the **Apache 2.0 License**. See the [LICENSE](LICENSE) file for complete details.
-
-## Contributing
-
-PRs welcome. Please run `cargo clippy` and `cargo test` before submitting.
-Open an issue first for large changes.
-
----
-
 ## 🎬 Live Demo Script
 
 > **Step-by-step terminal commands to prove the project works and show measurable improvements.**
@@ -506,6 +456,56 @@ Open: **https://github.com/Be-bibek/ProofTrace-5G/actions**
 
 ---
 
+
+## 📚 GitHub Repositories Used
+
+| Repo | Role | Usage |
+|---|---|---|
+| [BLAKE3-team/BLAKE3](https://github.com/BLAKE3-team/BLAKE3) | Hash function | `blake3 = "1.5"` in Cargo.toml — powers `auth.rs` |
+| [RustCrypto/AEADs](https://github.com/RustCrypto/AEADs) | Encryption | `chacha20poly1305 = "0.10"` — powers `crypto.rs` |
+| [PyO3/pyo3](https://github.com/PyO3/pyo3) | Rust↔Python bridge | `pyo3 = "0.21"` — exposes Rust API to Python |
+| [PyO3/maturin](https://github.com/PyO3/maturin) | Build tool | `maturin develop` / `maturin publish` |
+| [oconnor663/bao](https://github.com/oconnor663/bao) | Reference | Study `tests/bao.py` for BLAKE3 verified streaming patterns |
+
+None of these are forked — they are used as crate dependencies or build tools.
+
+---
+
+## 📄 IEEE Paper Citation
+
+```bibtex
+@inproceedings{securemark5g2025,
+  title     = {SecureMark5G: A Rust-Powered Lightweight Watermark-Assisted Authentication
+               Protocol for Secure 5G IoT Networks},
+  author    = {Bibek Das},
+  booktitle = {IEEE Conference on Communications and Network Security},
+  year      = {2025},
+  note      = {Under review}
+}
+```
+
+---
+
+## 🎓 Author
+
+**Bibek Das**
+- B.Tech Scholar, Electronics and Communication Engineering (ECE)
+- Guru Nanak Institute of Technology
+- GitHub: [@Be-bibek](https://github.com/Be-bibek)
+- Email: [bibekdas1055@gmail.com](mailto:bibekdas1055@gmail.com)
+
+---
+
+## ⚖️ License
+
+This project is open-sourced under the **Apache 2.0 License**. See the [LICENSE](LICENSE) file for complete details.
+
+## Contributing
+
+PRs welcome. Please run `cargo clippy` and `cargo test` before submitting.
+Open an issue first for large changes.
+
+---
 <br/>
 
 <div align="center">
