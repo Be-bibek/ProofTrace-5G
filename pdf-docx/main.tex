@@ -61,16 +61,16 @@ Edge implementations were explicitly examined by Singh et al.\ \cite{singh2023ro
 \caption{Architectural comparison of medical image security schemes.}
 \label{tab:comparison}
 \small
-\begin{tabular}{@{}llccccc@{}}
-\toprule
-\textbf{Scheme} & \textbf{WM} & \textbf{Encryption} & \textbf{Integrity} & \textbf{Edge-Ready} & \textbf{Freshness Check} \\
-\midrule
-Memon \& Alzahrani {[}1{]} & $\checkmark$ & {---} & Partial & {---} & {---} \\
-Anand \& Singh {[}2{]}     & $\checkmark$ & {---} & {---}   & {---} & {---} \\
-Gull et al. {[}4{]}        & $\checkmark$ & {---} & Local   & {---} & {---} \\
-Singh et al. {[}5{]}       & $\checkmark$ & AES & Checksum & $\checkmark$ & {---} \\
-\textbf{SecureMark-Med}    & $\checkmark$ & \textbf{ChaCha20} & \textbf{BLAKE3} & $\checkmark$ & $\checkmark$ \\
-\bottomrule
+\begin{tabular}{lccccc}
+\hline
+Scheme & WM & Encryption & Integrity & Edge-Ready & Freshness Check \\
+\hline
+Memon and Alzahrani [1] & $\checkmark$ & --- & Partial & --- & --- \\
+Anand and Singh [2]     & $\checkmark$ & --- & ---      & --- & --- \\
+Gull et al. [4]         & $\checkmark$ & --- & Local    & --- & --- \\
+Singh et al. [5]        & $\checkmark$ & AES & Checksum & $\checkmark$ & --- \\
+\textbf{SecureMark-Med} & \textbf{$\checkmark$} & \textbf{ChaCha20} & \textbf{BLAKE3} & \textbf{$\checkmark$} & \textbf{$\checkmark$} \\
+\hline
 \end{tabular}
 \end{table}
 
@@ -168,14 +168,14 @@ Fidelity preservation was assessed via Peak Signal-to-Noise Ratio (PSNR), Struct
   \text{MSE} = \frac{1}{MN}\sum_{i=0}^{M-1}\sum_{j=0}^{N-1} \bigl[I(i,j)-I_w(i,j)\bigr]^2
 \end{equation}
 
-\begin{figure}[htbp]
+As documented in Table~\ref{tab:dataset_fidelity}, watermark embedding preserved high structural fidelity ($\text{PSNR} > 51.4\,\text{dB}$, $\text{SSIM} > 0.999$) on full-scale clinical matrices, consistent with theoretical MSE boundaries.
+
+\begin{figure}[t]
 \centering
 \includegraphics[width=0.85\textwidth]{fig_visual_fidelity.png}
 \caption{Visual fidelity comparison on a high-resolution $1024 \times 1024$ clinical Chest X-Ray sample demonstrating (a) original matrix, (b) watermarked slice with embedded provenance, and (c) an amplified difference residual map ($\vert{}I - I_w\vert{} \times 100$). Note that the $52.14\,\text{dB}$ PSNR shown here matches the full-scale dataset evaluations in Table~\ref{tab:dataset_fidelity}.}
 \label{fig:visual_fidelity}
 \end{figure}
-
-As documented in Table~\ref{tab:dataset_fidelity}, watermark embedding preserved high structural fidelity ($\text{PSNR} > 51.4\,\text{dB}$, $\text{SSIM} > 0.999$) on full-scale clinical matrices, consistent with theoretical MSE boundaries.
 
 \subsection{5G Transmission Resilience and Tamper Detection}
 To evaluate deployment performance, the framework was modeled in a 5G New Radio (NR) sub-6 GHz simulated scenario. As detailed in Fig.~\ref{fig:resilience}a, SecureMark-Med demonstrates a near-linear transmission latency curve, staying well below the 1-second critical threshold even for volumetric series. Under intentional bit-flip and geometric distortion attacks (Fig.~\ref{fig:resilience}b), the framework correctly identified 100\% of tampering attempts: the AEAD layer detects ciphertext modifications, keyed BLAKE3 detects modifications of the authenticated recovered image, and watermark verification detects provenance mismatches. In non-adversarial but noisy channels (e.g. 5\% Gaussian noise, 50\% JPEG compression), the spatial fragility correctly tripped the integrity fault in $\ge 95\%$ of cases.
