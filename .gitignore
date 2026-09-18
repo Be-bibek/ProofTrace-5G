@@ -1,0 +1,39 @@
+# LaTeX auxiliary files
+*.aux
+*.bbl
+*.blg
+*.brf
+*.bcf
+*.fdb_latexmk
+*.fls
+*.idx
+*.ilg
+*.ind
+*.lof
+*.log
+*.lot
+*.out
+*.toc
+*.run.xml
+*.synctex.gz
+*.dvi
+*.tmp
+*.xref
+
+# Python
+__pycache__/
+*.pyc
+
+# MS Word temporary files
+~$*.docx
+*.docm
+
+# OS / Editor
+.DS_Store
+*.swp
+
+# Specific scratch files generated during the session
+Edge
+Claude-tex-1*
+main-pandoc.tex
+*Copy.pdf
