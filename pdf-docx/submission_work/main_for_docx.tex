@@ -104,24 +104,26 @@ The composite telemetry payload $\mathcal{M} = (\tilde{I} \parallel \tau \parall
 \end{equation}
 The transmitted datagram is structured as $P = \mathcal{N} \parallel C \parallel Tag$. While ChaCha20-Poly1305 AEAD guarantees transport confidentiality and ciphertext integrity during transmission, the BLAKE3 integrity token provides persistent provenance verification that remains executable within the hospital PACS environment long after transport-layer decryption.
 
-\begin{algorithm}[htbp]
-\caption{Receiver Verification and Provenance Extraction}
-\label{alg:verification}
-\begin{algorithmic}[1]
-\Require Datagram $P$; keys $K_{enc}, K_{sec}$; expected metadata $DevID, W_{exp}$; clock $T_{now}$
-\Ensure Verdict $\in \{\text{Authentic},\,\text{Tampered},\,\text{Stale}\}$
-\State Parse $\mathcal{N} \parallel C \parallel \text{Tag} \gets P$
-\State $M \gets \text{ChaCha20-Poly1305-Decrypt}(K_{enc}, \mathcal{N}, C, \text{Tag})$
-\If{$M = \bot$} \Return \textbf{Tampered} (AEAD tag failure) \EndIf
-\State Deconstruct $(I_w \parallel \tau \parallel T_s) \gets M$
-\If{$\vert{}T_{now} - T_s\vert{} > 30\,\text{s}$} \Return \textbf{Stale} (Expired freshness window) \EndIf
-\State $\tau_{\mathit{calc}} \gets \text{BLAKE3}_{\text{keyed}}(K_{sec}, DevID \parallel \text{Serialize}(I_w) \parallel T_s)$
-\If{$\tau \neq \tau_{\mathit{calc}}$} \Return \textbf{Tampered} (Cryptographic hash mismatch) \EndIf
-\State Extract $W_{ext}$ from LSBs of $I_w$
-\If{$W_{ext} \neq W_{exp}$} \Return \textbf{Tampered} (Provenance mismatch) \EndIf
-\State \Return \textbf{Authentic}
-\end{algorithmic}
-\end{algorithm}
+
+\vspace{10pt}
+\noindent\textbf{Algorithm 1: Receiver Verification and Provenance Extraction}
+
+\noindent\textbf{Require:} Datagram $P$; keys $K_{enc}, K_{sec}$; expected metadata $DevID, W_{exp}$; clock $T_{now}$\\
+\textbf{Ensure:} Verdict $\in \{\text{Authentic},\,\text{Tampered},\,\text{Stale}\}$
+
+\noindent
+1: Parse $\mathcal{N} \parallel C \parallel \text{Tag} \gets P$\\
+2: $M \gets \text{ChaCha20-Poly1305-Decrypt}(K_{enc}, \mathcal{N}, C, \text{Tag})$\\
+3: \textbf{if} $M = \bot$ \textbf{then return Tampered} (AEAD tag failure)\\
+4: Deconstruct $(I_w \parallel \tau \parallel T_s) \gets M$\\
+5: \textbf{if} $\vert{}T_{now} - T_s\vert{} > 30\,\text{s}$ \textbf{then return Stale} (Expired freshness window)\\
+6: $\tau_{\mathit{calc}} \gets \text{BLAKE3}_{\text{keyed}}(K_{sec}, DevID \parallel \text{Serialize}(I_w) \parallel T_s)$\\
+7: \textbf{if} $\tau \neq \tau_{\mathit{calc}}$ \textbf{then return Tampered} (Cryptographic hash mismatch)\\
+8: Extract $W_{ext}$ from LSBs of $I_w$\\
+9: \textbf{if} $W_{ext} \neq W_{exp}$ \textbf{then return Tampered} (Provenance mismatch)\\
+10: \textbf{return Authentic}
+\vspace{10pt}
+
 
 Algorithm~\ref{alg:verification} and Figure~\ref{fig:architecture} illustrate the receiver verification protocol. Upon packet ingestion, the receiving gateway executes ChaCha20-Poly1305 decryption, enforces a temporal freshness window ($\Delta T \le 30\text{ s}$), evaluates the keyed BLAKE3 token against the recovered byte buffer, and extracts the spatial LSB payload. Failure of any single verification condition triggers an immediate packet rejection.
 
