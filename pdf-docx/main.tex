@@ -13,14 +13,16 @@
 \usepackage{microtype}
 \usepackage[hidelinks]{hyperref}
 
-\setlength{\textfloatsep}{4pt plus 1pt minus 1pt}
-\setlength{\floatsep}{4pt plus 1pt minus 1pt}
-\setlength{\intextsep}{4pt plus 1pt minus 1pt}
+\setlength{\textfloatsep}{2pt plus 1pt minus 1pt}
+\setlength{\floatsep}{2pt plus 1pt minus 1pt}
+\setlength{\intextsep}{2pt plus 1pt minus 1pt}
 \renewcommand{\arraystretch}{0.90}
+\renewcommand{\baselinestretch}{0.92}
 
 \newcommand{\doi}[1]{\mbox{\href{https://doi.org/#1}{\texttt{https://doi.org/#1}}}}
 
 \begin{document}
+\linespread{0.93}\selectfont
 
 \title{Edge-Assisted Secure Medical Telemetry Using Lightweight Watermarking and Cryptographic Authentication in 5G Healthcare Networks}
 \titlerunning{SecureMark-Med: Lightweight Provenance for 5G Medical Networks}
@@ -33,28 +35,22 @@
 \maketitle
 
 \begin{abstract}
-Decrypted DICOM payloads on hospital picture archiving and communication systems (PACS) lack built-in provenance mechanisms to verify their acquisition source or detect post-decryption manipulation. Standard symmetric transport pipelines terminate security checks once decryption completes at the receiver boundary. This study evaluates SecureMark-Med, an edge-oriented verification framework combining spatial least-significant-bit (LSB) watermarking, keyed BLAKE3 integrity hashing, and ChaCha20-Poly1305 authenticated encryption. The pipeline embeds device identifiers, patient indexes, and hardware timestamps directly into DICOM pixel arrays, authenticates the modified matrix through a Merkle-tree BLAKE3 token, and seals the datagram using ChaCha20-Poly1305. A temporal threshold at the receiver rejects packets arriving outside a 30-second window. Tested on a Raspberry Pi 3 Model B+ node using 16-bit clinical CT and radiographic series, the cryptographic execution took 28.61\,ms for encryption and 11.92\,ms for verification, compared to 84.32\,ms and 31.65\,ms for AES-256 and HMAC-SHA256 baselines. Across tested sets, the fragile spatial watermark maintained baseline image fidelity ($\text{PSNR} > 51.4$\,dB, $\text{SSIM} > 0.999$) while detecting localized bit alterations.
+Medical images that have already been decrypted at a hospital picture archiving and communication system (PACS) no longer carry the protection of the transport layer. As a result, establishing where an image originated and determining whether it was altered after decryption can become difficult. This work examines SecureMark-Med, an edge-focused verification scheme that combines fragile least-significant-bit (LSB) watermarking with keyed BLAKE3 hashing and ChaCha20-Poly1305 authenticated encryption. Device information, patient indexes, and acquisition timestamps are embedded within the DICOM pixel data. The resulting image is bound to a keyed BLAKE3 integrity token and then protected in transit with ChaCha20-Poly1305. At the receiver, a 30\,s freshness window is also checked to identify delayed or replayed packets. Experiments on a Raspberry Pi 3 Model B+ using clinical CT and radiographic data produced encryption and verification times of 28.61\,ms and 11.92\,ms, respectively; the corresponding AES-256 and HMAC-SHA256 baselines required 84.32\,ms and 31.65\,ms. Image quality remained high after watermark insertion ($\text{PSNR} > 51.4$\,dB and $\text{SSIM} > 0.999$ for the reported 16-bit sets), while localized bit changes were detected by the verification chain.
 \keywords{Medical Image Security \and Digital Watermarking \and BLAKE3 \and ChaCha20-Poly1305 \and 5G IoMT \and DICOM Telemetry}
 \end{abstract}
 
 \section{Introduction}
 
-High-bandwidth 5G connections allow mobile triage units to stream DICOM diagnostic scans (CT, X-ray, ultrasound) directly to emergency hospital teams before patient arrival. However, transmitting unauthenticated imaging over wireless uplinks creates security risks, including packet interception, data manipulation, and replay attempts. Because clinical diagnosis depends on precise image readings, undetected modifications of even a few pixel values can distort anatomical features or mimic acute pathology.
+Fifth-generation mobile links make it practical for ambulances and mobile triage units to send DICOM scans, including CT, X-ray, and ultrasound images, to a hospital before the patient arrives. This can shorten the time available for clinical preparation, but it also places diagnostic data on a wireless path where interception, modification, or replay is possible. Even a small, unnoticed change in pixel values is undesirable in a clinical image because the interpretation depends on preserving the acquired data.
 
-Standard transport security uses block ciphers like AES-256 alongside SHA-2 hash functions. In emergency triage telemetry, this setup has specific practical drawbacks:
+Conventional transport protection commonly combines a block cipher such as AES-256 with SHA-2-based integrity mechanisms. That approach protects data while it is being transmitted, but three limitations are relevant to an edge-based emergency telemetry setting:
 \begin{enumerate}
-  \item \textbf{Loss of Post-Decryption Provenance:} Standard decryption at the PACS terminal removes the transport security wrapper, leaving the plain DICOM file without verifiable proof of origin or post-decryption tamper evidence.
-  \item \textbf{Edge Computational Overhead:} Field gateways in mobile units often run on low-power ARM hardware lacking dedicated AES-NI instructions, increasing cryptographic processing times and battery drain.
-  \item \textbf{Sequential Hashing Delays:} Sequential hashing algorithms like SHA-256 process large, 16-bit multi-megabyte volumetric scans in a single thread, causing transmission bottlenecks.
+  \item \textbf{Loss of post-decryption provenance.} After a protected packet is decrypted at the PACS endpoint, the transport wrapper is no longer attached to the plain DICOM object. The image therefore needs an additional mechanism if its source and later integrity are to remain verifiable.
+  \item \textbf{Edge computational overhead.} Ambulance gateways may rely on low-power ARM processors without dedicated AES-NI acceleration. On such hardware, conventional cryptographic processing can add latency and increase resource use.
+  \item \textbf{Sequential hashing delay.} Large 16-bit images and volumetric data can make sequential hashing a noticeable part of the processing path, particularly when the gateway has limited compute capacity.
 \end{enumerate}
 
-SecureMark-Med addresses these issues by embedding provenance metadata into the image matrix itself, verified using keyed BLAKE3 hashing and software-efficient ChaCha20-Poly1305 AEAD.
-
-\section{Related Work}
-
-Digital watermarking for medical telemetry has emerged as an effective technique for binding ownership and integrity metadata directly into clinical images. Memon and Alzahrani \cite{memon2020prediction} utilized prediction-error expansion for CT scan authentication, focusing on pixel reversibility. Anand and Singh \cite{anand2021health} investigated multi-modal image watermarking for composite EHR security. Alzahrani and Memon \cite{alzahrani2021blind} developed a blind hybrid-domain scheme for clinical copyright enforcement, while Gull et al.\ \cite{gull2021self} proposed a self-embedding technique for tamper detection in IoMT environments.
-
-Edge implementations were explicitly examined by Singh et al.\ \cite{singh2023robust}, who highlighted significant latency constraints when executing legacy ciphers on embedded hardware. Tayachi et al.\ \cite{tayachi2023hybrid} introduced a hybrid DICOM watermarking approach, though encryption and integrity remained uncoupled. Abirami and Malathy \cite{abirami2024secured} demonstrated chaos-based encryption paired with deep-learning watermarking, while Mahmood et al.\ \cite{mahmood2025secure} surveyed open challenges across IoMT architectures, emphasizing the need for sub-second zero-copy security primitives. Supporting studies on robust IoMT watermarking \cite{singh2025ensuring}, accelerated blockchain consensus via BLAKE3 \cite{jasim2025optimizing}, and lightweight IoT stream ciphers \cite{buhler2022benchmarking} confirm the throughput benefits of ARX primitives. The cryptographic building blocks in SecureMark-Med leverage the BLAKE3 parallel tree-hash specification \cite{oconnor2020blake3}, the ChaCha20-Poly1305 AEAD protocol \cite{nir2018chacha20}, and official NEMA DICOM interchange standards \cite{nema2024dicom}.
+SecureMark-Med was designed around these constraints. Rather than relying only on the transport envelope, it places provenance information in the image itself, binds the recovered image to a keyed BLAKE3 token, and uses ChaCha20-Poly1305 for authenticated transport.
 
 \begin{table}[t]
 \centering
@@ -65,40 +61,48 @@ Edge implementations were explicitly examined by Singh et al.\ \cite{singh2023ro
 \hline
 Scheme & WM & Encryption & Integrity & Edge-Ready & Freshness Check \\
 \hline
-Memon and Alzahrani [1] & $\checkmark$ & --- & Partial & --- & --- \\
-Anand and Singh [2]     & $\checkmark$ & --- & ---      & --- & --- \\
-Gull et al. [4]         & $\checkmark$ & --- & Local    & --- & --- \\
-Singh et al. [5]        & $\checkmark$ & AES & Checksum & $\checkmark$ & --- \\
+Memon and Alzahrani \cite{memon2020prediction} & $\checkmark$ & --- & Partial & --- & --- \\
+Anand and Singh \cite{anand2021health}     & $\checkmark$ & --- & ---      & --- & --- \\
+Gull et al.\ \cite{gull2021self}         & $\checkmark$ & --- & Local    & --- & --- \\
+Singh et al.\ \cite{singh2023robust}        & $\checkmark$ & AES & Checksum & $\checkmark$ & --- \\
 \textbf{SecureMark-Med} & \textbf{$\checkmark$} & \textbf{ChaCha20} & \textbf{BLAKE3} & \textbf{$\checkmark$} & \textbf{$\checkmark$} \\
 \hline
 \end{tabular}
 \end{table}
 
+\section{Related Work}
+
+Medical-image watermarking has been studied as a way of keeping ownership, provenance, or integrity information with the image rather than only with the communication channel. Memon and Alzahrani \cite{memon2020prediction} used prediction-error expansion for reversible CT authentication. Anand and Singh \cite{anand2021health} considered multiple watermarking for fused medical images, whereas Alzahrani and Memon \cite{alzahrani2021blind} developed a blind hybrid-domain method aimed at copyright protection. Gull et al.\ \cite{gull2021self} used self-embedding to support tamper detection and localization in smart-health applications.
+
+Work closer to edge deployment has also highlighted the cost of security processing on constrained devices. Singh et al.\ \cite{singh2023robust} studied secure medical-image watermarking in edge-enabled e-healthcare and reported the importance of computational overhead. Tayachi et al.\ \cite{tayachi2023hybrid} proposed a hybrid DICOM watermarking method, while Abirami and Malathy \cite{abirami2024secured} combined chaos-based encryption with a customized deep-learning watermarking model. A broader review by Mahmood et al.\ \cite{mahmood2025secure} discusses remaining issues in secure medical-image sharing and IoMT.
+
+The present design draws on these lines of work but combines the functions in a single edge pipeline. Robust IoMT watermarking \cite{singh2025ensuring}, BLAKE3-based acceleration studies \cite{jasim2025optimizing}, and benchmarking of lightweight cryptography on embedded platforms \cite{buhler2022benchmarking} motivate the choice of primitives. BLAKE3 provides the parallel tree-hash structure used for the keyed integrity token \cite{oconnor2020blake3}, ChaCha20-Poly1305 supplies authenticated encryption \cite{nir2018chacha20}, and the image representation follows the DICOM standard maintained by NEMA \cite{nema2024dicom}.
+
 \section{Proposed SecureMark-Med Framework}
 
-The SecureMark-Med pipeline consists of three sequential operations: provenance data embedding, cryptographic integrity token calculation, and authenticated transport encryption.
+The proposed pipeline performs three linked tasks before transmission: it inserts provenance information into the image, computes a cryptographic integrity token over the watermarked data, and finally applies authenticated encryption. The receiver reverses these steps while checking freshness and consistency at each stage.
 
 \subsection{Watermark Embedding}
-Let $I \in \mathbb{R}^{M \times N}$ denote a 16-bit grayscale DICOM pixel array. The provenance payload $W$ aggregates patient, facility, and acquisition identifiers:
+Let $I \in \mathbb{R}^{M \times N}$ represent a 16-bit grayscale DICOM image. The watermark payload $W$ combines patient, hospital, device, and acquisition-time information:
 \begin{equation}
   W = ID_{pat} \parallel ID_{hosp} \parallel DevID \parallel T_s
 \end{equation}
-$W$ is serialized into a binary sequence $B=\{b_0,\dots,b_{L-1}\}$ and embedded into the least significant bit (LSB) of sequential image pixels:
+The payload is serialized as $B=\{b_0,\dots,b_{L-1}\}$. Each bit is written into the least significant bit of a successive image pixel:
 \begin{equation}
   \tilde{p}(i,j) = \bigl(p(i,j) \land {\sim}1\bigr) \lor b_k, \quad k = i \cdot N + j, \quad \forall\,k < L
 \end{equation}
-Because emergency triage telemetry profiles focus on lossless preservation of pixel values, spatial bit modifications must stay strictly bounded ($\vert{}p(i,j)-\tilde{p}(i,j)\vert{}\le1$). In this environment, fragile LSB watermarks serve as a sensitive baseline detector: any subsequent pixel alteration or lossy re-encoding disrupts the watermark sequence, flagging an integrity fault.
+Only the least significant bit is changed, so the absolute modification of an affected pixel is at most one gray-level unit. In this study the watermark is intentionally fragile: a later pixel modification or lossy re-encoding can disturb the embedded sequence and is therefore treated as an integrity warning. This behavior is suitable for the lossless telemetry profile considered here, where preserving the acquired pixel matrix is the priority.
 
 \subsection{Integrity Token and Authenticated Encryption}
-The watermarked matrix $I_w$ is serialized to byte buffer $M_{bytes}$. A keyed integrity token $\tau$ is generated via BLAKE3 using a pre-shared 256-bit secret key $K_{sec}$:
+After embedding, the watermarked image $I_w$ is serialized as the byte buffer $M_{bytes}$. A keyed BLAKE3 token $\tau$ is then calculated with the shared 256-bit secret $K_{sec}$:
 \begin{equation}
   \tau = \text{BLAKE3}_{\text{keyed}}(K_{sec}, DevID \parallel M_{bytes} \parallel T_s)
 \end{equation}
-The combined payload $M = (I_w \parallel \tau \parallel T_s)$ is encrypted using ChaCha20-Poly1305 with key $K_{enc}$ and a fresh 96-bit CSPRNG nonce $\mathcal{N}$:
+The image, token, and timestamp are grouped as $M = (I_w \parallel \tau \parallel T_s)$. This payload is encrypted with ChaCha20-Poly1305 using $K_{enc}$ and a fresh 96-bit CSPRNG nonce $\mathcal{N}$:
 \begin{equation}
   (C,\,\text{Tag}) = \text{ChaCha20-Poly1305-Encrypt}(K_{enc},\mathcal{N},M)
 \end{equation}
-The generated transport datagram is $P = \mathcal{N} \parallel C \parallel \text{Tag}$. While the ChaCha20-Poly1305 AEAD construction natively guarantees the integrity of the encrypted transport envelope during transmission, the BLAKE3-bound watermark serves an orthogonal purpose: it provides a persistent, application-layer provenance representation that remains verifiable long after decryption at the hospital PACS workstation.
+The transmitted datagram is $P = \mathcal{N} \parallel C \parallel \text{Tag}$. The AEAD tag protects the transport packet itself, whereas the keyed BLAKE3 value and embedded watermark provide checks tied to the recovered application data. Keeping these roles separate is useful after decryption, because provenance can still be evaluated at the PACS workstation even though the transport envelope has been removed.
 
 \begin{algorithm}[htbp]
 \caption{Receiver Verification and Provenance Extraction}
@@ -119,12 +123,13 @@ The generated transport datagram is $P = \mathcal{N} \parallel C \parallel \text
 \end{algorithmic}
 \end{algorithm}
 
-Algorithm~\ref{alg:verification} and its corresponding logical flow in Fig.~\ref{fig:architecture} detail the multi-stage receiver verification process. Upon receiving the telemetry packet, the edge gateway decrypts the payload using the ChaCha20 cipher. To guarantee strict cryptographic integrity, the framework sequentially verifies the AEAD tag, enforces a strict 30-second freshness check to mitigate delayed packet transmission, validates the BLAKE3 hash, and finally extracts the LSB watermark to ensure clinical provenance. If any intermediate condition fails, the pipeline immediately aborts and flags the transmission as tampered or stale.
+At reception, the packet is first authenticated and decrypted. A failed AEAD check immediately marks the packet as tampered. A valid packet is then tested against the 30\,s freshness window, followed by recomputation of the keyed BLAKE3 token and extraction of the LSB watermark. The packet is accepted only when all four checks succeed.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
 \centering
-\includegraphics[width=\textwidth]{fig_architecture.png}
-\caption{Logical architecture and decision flow of the receiver verification stage, illustrating the sequential cryptographic and provenance checks.}
+\includegraphics[width=0.95\textwidth]{fig_architecture.png}
+\vspace{-5pt}
+\caption{Logical architecture and decision flow of the receiver verification stage, showing the sequence of cryptographic, freshness, and provenance checks.}
 \label{fig:architecture}
 \end{figure}
 
@@ -147,52 +152,57 @@ Cardiac Ultrasound & $640 \times 480$   & 8-bit  & 900\,KB & 49.82 & 0.9989 & 0.
 \end{tabular}
 \end{table}
 
-Empirical tests were executed on a Raspberry Pi~3 Model B+ (Broadcom BCM2837B0, 4-core Cortex-A53 @ 1.4\,GHz, Linux kernel 6.1) acting as the ambulance gateway, transmitting to an AMD Ryzen workstation. The core cryptographic primitives were implemented in Rust using the \texttt{blake3} (v1.5) and \texttt{chacha20poly1305} (v0.10) crates, exposed to the evaluation environment via \texttt{pyo3} Python bindings. Execution timing was measured across 1{,}000 independent trials, following a 100-iteration warm-up phase to reduce startup and initialization effects. The reported latency measurements isolate the local cryptographic execution, explicitly excluding spatial watermarking overhead and network I/O. The evaluation used the DICOM image instances described in Table~\ref{tab:dataset_fidelity}.
+The experiments used a Raspberry Pi 3 Model B+ (Broadcom BCM2837B0, four Cortex-A53 cores at 1.4\,GHz, Linux kernel 6.1) as the ambulance-side gateway and an AMD Ryzen workstation at the receiving side. BLAKE3 (v1.5) and chacha20poly1305 (v0.10) were implemented in Rust and exposed to the test environment through \texttt{pyo3} bindings. Each timing result was obtained from 1{,}000 independent trials after 100 warm-up iterations. The reported cryptographic timings exclude network I/O and the spatial watermarking step, so they should be interpreted as local processing costs rather than complete end-to-end system latency.
 
-As detailed in Table~\ref{tab:dataset_fidelity}, the evaluated datasets cover various critical clinical modalities, including high-resolution 16-bit Chest X-Rays and Cranial CT scans. The framework successfully exceeded the stringent target PSNR thresholds across all modalities while maintaining an exceptional Structural Similarity (SSIM) of $\ge 0.9989$ and zero bit error rate (BER), confirming that the fragile LSB spatial modifications introduce negligible pixel-level distortion and maintain high structural fidelity in the original medical matrix.
+The DICOM instances listed in Table~\ref{tab:dataset_fidelity} span CT, chest radiography, MRI, and ultrasound. For the reported 16-bit images, PSNR remained above $51.4\,\text{dB}$ and SSIM above 0.999. The ultrasound case, which is 8-bit, produced a PSNR of $49.82\,\text{dB}$ and an SSIM of 0.9989. BER was 0.00\% for every listed modality. These measurements indicate that changing only the LSB produces very small image differences in the tested data.
 
 \subsection{Processing Latency and Resource Consumption}
-As illustrated in Fig.~\ref{fig:benchmarks}, averaged across 1{,}000 runs, ChaCha20-Poly1305 encryption completed in $28.61\,\text{ms}$, outperforming AES-256 ($84.32\,\text{ms}$, $2.94\times$ slower). The inclusion of RSA-2048 ($132.47\,\text{ms}$) serves strictly as a reference for asymmetric key encapsulation overhead, not bulk payload encryption. BLAKE3 token generation required $11.92\,\text{ms}$, a $2.65\times$ acceleration over HMAC-SHA256 ($31.65\,\text{ms}$). Memory footprint peaked at $70.16\,\text{MB}$, compared to $198.45\,\text{MB}$ for baseline implementations.
+Figure~\ref{fig:benchmarks} summarizes the processing measurements. ChaCha20-Poly1305 required $28.61\,\text{ms}$ for encryption, compared with $84.32\,\text{ms}$ for AES-256 in the reported test setup. RSA-2048 took $132.47\,\text{ms}$ and is included only as a reference for asymmetric key-encapsulation cost rather than as an alternative bulk-image cipher. For integrity processing, the keyed BLAKE3 stage required $11.92\,\text{ms}$, whereas HMAC-SHA256 required $31.65\,\text{ms}$. Peak memory use was $70.16\,\text{MB}$ for the proposed implementation and $198.45\,\text{MB}$ for the baseline implementation.
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.85\textwidth]{fig_benchmarks.png}
-\caption{Performance benchmarks: (a) cipher encryption latency, (b) hash verification delay, and (c) attack detection accuracy across evaluated vectors.}
+\includegraphics[width=0.8\textwidth]{fig_benchmarks.png}
+\vspace{-5pt}
+\caption{Performance benchmarks: (a) cipher encryption latency, (b) hash verification delay, and (c) attack detection accuracy across the evaluated vectors.}
 \label{fig:benchmarks}
 \end{figure}
 
 \subsection{Diagnostic Image Fidelity}
-Fidelity preservation was assessed via Peak Signal-to-Noise Ratio (PSNR), Structural Similarity (SSIM), Normalized Cross-Correlation (NC), and Bit Error Rate (BER):
+Image fidelity was evaluated using Peak Signal-to-Noise Ratio (PSNR), Structural Similarity (SSIM), Normalized Cross-Correlation (NC), and Bit Error Rate (BER). PSNR was calculated from the mean-squared error between the original image $I$ and the watermarked image $I_w$:
 \begin{equation}
   \text{PSNR} = 10\log_{10}\!\left(\frac{\text{MAX}_I^2}{\text{MSE}}\right), \quad
   \text{MSE} = \frac{1}{MN}\sum_{i=0}^{M-1}\sum_{j=0}^{N-1} \bigl[I(i,j)-I_w(i,j)\bigr]^2
 \end{equation}
 
-As documented in Table~\ref{tab:dataset_fidelity}, watermark embedding preserved high structural fidelity ($\text{PSNR} > 51.4\,\text{dB}$, $\text{SSIM} > 0.999$) on full-scale clinical matrices, consistent with theoretical MSE boundaries.
+The visual comparison in Fig.~\ref{fig:visual_fidelity} is consistent with the numerical results in Table~\ref{tab:dataset_fidelity}. The original and watermarked chest X-ray appear nearly identical at normal viewing scale, while the amplified residual map makes the small LSB-level differences visible. For this sample, the measured PSNR is $52.14\,\text{dB}$ and SSIM is 0.9998.
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.85\textwidth]{fig_visual_fidelity.png}
-\caption{Visual fidelity comparison on a high-resolution $1024 \times 1024$ clinical Chest X-Ray sample demonstrating (a) original matrix, (b) watermarked slice with embedded provenance, and (c) an amplified difference residual map ($\vert{}I - I_w\vert{} \times 100$). Note that the $52.14\,\text{dB}$ PSNR shown here matches the full-scale dataset evaluations in Table~\ref{tab:dataset_fidelity}.}
+\includegraphics[width=0.8\textwidth]{fig_visual_fidelity.png}
+\vspace{-5pt}
+\caption{Chest X-ray example showing the original image, the watermarked image, and an amplified residual map. The reported sample has $\text{PSNR} = 52.14\,\text{dB}$ and $\text{SSIM} = 0.9998$.}
 \label{fig:visual_fidelity}
 \end{figure}
 
 \subsection{5G Transmission Resilience and Tamper Detection}
-To evaluate deployment performance, the framework was modeled in a 5G New Radio (NR) sub-6 GHz simulated scenario. As detailed in Fig.~\ref{fig:resilience}a, SecureMark-Med demonstrates a near-linear transmission latency curve, staying well below the 1-second critical threshold even for volumetric series. Under intentional bit-flip and geometric distortion attacks (Fig.~\ref{fig:resilience}b), the framework correctly identified 100\% of tampering attempts: the AEAD layer detects ciphertext modifications, keyed BLAKE3 detects modifications of the authenticated recovered image, and watermark verification detects provenance mismatches. In non-adversarial but noisy channels (e.g. 5\% Gaussian noise, 50\% JPEG compression), the spatial fragility correctly tripped the integrity fault in $\ge 95\%$ of cases.
+A simulated 5G New Radio sub-6 GHz scenario was used to examine the deployment behavior shown in Fig.~\ref{fig:resilience}. End-to-end latency increased with payload size, but the SecureMark-Med curve remained below 1\,s for the tested payloads. In the intentional bit-flip tests, the verification chain detected all reported tampering attempts. The layers contribute different checks: AEAD identifies ciphertext changes, keyed BLAKE3 checks the authenticated recovered image, and the watermark comparison checks embedded provenance. Under non-adversarial degradations such as 5\% Gaussian noise and 50\% JPEG compression, the fragile watermark is expected to react to altered pixels; the reported detection rates were at least 95\% in the tested cases. This sensitivity is deliberate, although it also means that the current fragile watermark is intended for lossless or tightly controlled image paths rather than for routine lossy re-encoding.
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.85\textwidth]{fig_telemetry_resilience.png}
-\caption{5G Telemetry Performance and Attack Detection showing (a) end-to-end latency scaling by payload size and (b) resilience under transmission attacks.}
+\includegraphics[width=0.8\textwidth]{fig_telemetry_resilience.png}
+\vspace{-5pt}
+\caption{5G telemetry performance and attack detection: (a) end-to-end latency versus payload size and (b) verification behavior under the evaluated transmission attacks.}
 \label{fig:resilience}
 \end{figure}
 
 \section{Conclusion}
-
-SecureMark-Med provides a high-throughput, provenance-preserving security framework for emergency DICOM streaming. By coupling fragile spatial LSB watermarking with parallel BLAKE3 hashing and ChaCha20-Poly1305 AEAD, the architecture provides verifiable post-decryption provenance while reducing cryptographic latency on edge hardware compared to legacy block-cipher pipelines. Future research will explore automated region-of-interest (ROI) segmentation to preserve diagnostic margins under lossy transmission channels.
+SecureMark-Med combines three complementary mechanisms for emergency DICOM telemetry: a fragile LSB watermark that keeps provenance information with the image, keyed BLAKE3 for application-layer integrity binding, and ChaCha20-Poly1305 for authenticated transport. On the Raspberry Pi 3 Model B+ test platform, the proposed cryptographic stages required $28.61\,\text{ms}$ for encryption and $11.92\,\text{ms}$ for verification, compared with $84.32\,\text{ms}$ and $31.65\,\text{ms}$ for the reported AES-256 and HMAC-SHA256 baselines. The tested images also retained high fidelity, with the 16-bit cases exceeding $51.4\,\text{dB}$ PSNR and 0.999 SSIM, while the listed BER remained 0.00\%. These results support the feasibility of the design for edge telemetry under the evaluated conditions. A limitation of the present fragile watermark is its sensitivity to lossy processing. Future work will therefore investigate automated region-of-interest segmentation and strategies that preserve diagnostic regions when transmission or storage involves controlled lossy operations.
 
 \begin{thebibliography}{14}
 \small
+\setlength{\itemsep}{0pt}
+\setlength{\parskip}{0pt}
+\setlength{\parsep}{0pt}
 
 \bibitem{memon2020prediction}
 Memon, N.A., Alzahrani, A.: Prediction-based reversible watermarking of CT
